@@ -1,21 +1,45 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
+import React, {useState} from 'react';
+import {  View , BackHandler, Alert} from 'react-native';
+import  styles from './AppStyles'
+import {Main, Header} from './Components'
 export default function App() {
+  console.disableYellowBox = true;
+  React.useEffect(() => {
+    const btnAction = () => {
+      Alert.alert(
+        "Crisp Image Share",
+        "Are you sure you want to exit Crisp Image Share?",
+        [{
+            text: "cancel",
+            onPress: () => null,
+            style: "cancel",
+          }, {
+            text: "yes",
+            onPress: () => BackHandler.exitApp(),
+            style: "destructive",
+          },
+      
+        ],{
+          cancelable: !true
+        }
+
+      );
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      btnAction
+    );
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
+  const [image, setImage] = useState(null)
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+     <Header setImage={setImage} image={image} />
+     <Main image={image} setImage={setImage} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
